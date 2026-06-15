@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RED OPS // 90-Day Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:       #070a0f;
+    --surface:  #0d1117;
+    --panel:    #111820;
+    --border:   #1e2d3d;
+    --red:      #ff2a2a;
+    --red-dim:  #8b0000;
+    --amber:    #f59e0b;
+    --green:    #00ff88;
+    --green-dim:#004d29;
+    --cyan:     #00e5ff;
+    --cyan-dim: #004d5f;
+    --text:     #c9d1d9;
+    --muted:    #5c6370;
+    --white:    #e6edf3;
+    --m1:       #f97316;
+    --m2:       #a855f7;
+    --m3:       #06b6d4;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-hd:  'Rajdhani', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --radius:   6px;
+    --glow-red: 0 0 12px rgba(255,42,42,.4);
+    --glow-g:   0 0 12px rgba(0,255,136,.35);
+    --glow-c:   0 0 12px rgba(0,229,255,.3);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ── SCANLINE OVERLAY ── */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+    pointer-events:none;z-index:9999;
+  }
+
+  /* ── HEADER ── */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(7,10,15,.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:0 2rem;
+    display:flex;align-items:center;justify-content:space-between;
+    height:60px;
+  }
+  .logo{
+    font-family:var(--font-mono);
+    font-size:1.1rem;
+    color:var(--red);
+    text-shadow:var(--glow-red);
+    letter-spacing:2px;
+  }
+  .logo span{color:var(--white);}
+  .header-meta{
+    font-family:var(--font-mono);
+    font-size:.7rem;
+    color:var(--muted);
+    text-align:right;
+    line-height:1.6;
+  }
+  .header-meta b{color:var(--cyan);}
+
+  /* ── HERO ── */
+  .hero{
+    padding:3rem 2rem 2rem;
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:'';
+    position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(255,42,42,.07),transparent);
+    pointer-events:none;
+  }
+  .hero-label{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    color:var(--red);
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-bottom:.6rem;
+  }
+  .hero-title{
+    font-family:var(--font-hd);
+    font-size:clamp(2.2rem,5vw,4.2rem);
+    font-weight:700;
+    color:var(--white);
+    line-height:1.05;
+    letter-spacing:1px;
+  }
+  .hero-title .accent{color:var(--red);text-shadow:var(--glow-red);}
+  .hero-sub{
+    margin-top:.8rem;
+    font-size:.9rem;
+    color:var(--muted);
+    max-width:540px;
+    line-height:1.6;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar{
+    display:flex;gap:1rem;
+    padding:1.2rem 2rem;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    background:var(--surface);
+    flex-wrap:wrap;
+  }
+  .stat{
+    display:flex;flex-direction:column;
+    font-family:var(--font-mono);
+    min-width:110px;
+  }
+  .stat-val{
+    font-size:1.6rem;
+    font-weight:700;
+    color:var(--white);
+    line-height:1;
+  }
+  .stat-val.red{color:var(--red);text-shadow:var(--glow-red);}
+  .stat-val.green{color:var(--green);text-shadow:var(--glow-g);}
+  .stat-val.cyan{color:var(--cyan);text-shadow:var(--glow-c);}
+  .stat-val.amber{color:var(--amber);}
+  .stat-lbl{font-size:.65rem;color:var(--muted);letter-spacing:2px;margin-top:2px;}
+
+  /* ── GLOBAL PROGRESS ── */
+  .global-progress{
+    padding:1rem 2rem;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+  }
+  .progress-header{
+    display:flex;justify-content:space-between;
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    color:var(--muted);
+    margin-bottom:.4rem;
+  }
+  .progress-header b{color:var(--green);}
+  .progress-track{
+    height:6px;
+    background:var(--border);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    border-radius:3px;
+    background:linear-gradient(90deg,var(--red),var(--amber),var(--green));
+    transition:width .6s cubic-bezier(.4,0,.2,1);
+    width:0%;
+  }
+
+  /* ── CONTROLS ── */
+  .controls{
+    display:flex;gap:.6rem;
+    padding:1rem 2rem;
+    flex-wrap:wrap;
+    align-items:center;
+    border-bottom:1px solid var(--border);
+  }
+  .filter-btn{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    letter-spacing:1px;
+    padding:.32rem .9rem;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
+    transition:all .18s;
+  }
+  .filter-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+  .filter-btn.active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:var(--glow-red);}
+  .search-wrap{
+    margin-left:auto;
+    position:relative;
+  }
+  .search-input{
+    font-family:var(--font-mono);
+    font-size:.75rem;
+    padding:.35rem .8rem .35rem 2rem;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    outline:none;
+    width:220px;
+    transition:border-color .18s;
+  }
+  .search-input:focus{border-color:var(--cyan);}
+  .search-icon{
+    position:absolute;left:.6rem;top:50%;transform:translateY(-50%);
+    color:var(--muted);font-size:.8rem;pointer-events:none;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    min-height:calc(100vh - 60px);
+  }
+
+  /* ── SIDEBAR ── */
+  aside{
+    border-right:1px solid var(--border);
+    background:var(--surface);
+    padding:1.2rem 0;
+    position:sticky;top:60px;
+    height:calc(100vh - 60px);
+    overflow-y:auto;
+  }
+  aside::-webkit-scrollbar{width:4px;}
+  aside::-webkit-scrollbar-track{background:transparent;}
+  aside::-webkit-scrollbar-thumb{background:var(--border);}
+
+  .aside-section{margin-bottom:1.4rem;}
+  .aside-label{
+    font-family:var(--font-mono);
+    font-size:.62rem;
+    color:var(--muted);
+    letter-spacing:3px;
+    padding:.4rem 1.2rem;
+    text-transform:uppercase;
+  }
+  .nav-item{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.55rem 1.2rem;
+    cursor:pointer;
+    font-size:.82rem;
+    font-family:var(--font-body);
+    color:var(--muted);
+    transition:all .15s;
+    border-left:2px solid transparent;
+    text-decoration:none;
+  }
+  .nav-item:hover{color:var(--text);background:rgba(255,255,255,.03);}
+  .nav-item.active{color:var(--white);border-left-color:var(--red);background:rgba(255,42,42,.06);}
+  .nav-dot{
+    width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  }
+  .nav-count{
+    margin-left:auto;
+    font-family:var(--font-mono);
+    font-size:.65rem;
+    color:var(--muted);
+  }
+
+  /* ── CONTENT ── */
+  .content{padding:1.5rem 2rem;}
+
+  /* ── PHASE HEADER ── */
+  .phase-block{margin-bottom:3rem;}
+  .phase-header{
+    display:flex;align-items:center;gap:1rem;
+    margin-bottom:1.2rem;
+    padding-bottom:.8rem;
+    border-bottom:1px solid var(--border);
+    position:relative;
+  }
+  .phase-badge{
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    padding:.2rem .6rem;
+    border-radius:3px;
+    letter-spacing:2px;
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .phase-title{
+    font-family:var(--font-hd);
+    font-size:1.4rem;
+    font-weight:700;
+    color:var(--white);
+    letter-spacing:.5px;
+  }
+  .phase-dates{
+    margin-left:auto;
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    color:var(--muted);
+    flex-shrink:0;
+  }
+  .phase-prog{
+    display:flex;align-items:center;gap:.6rem;
+    margin-bottom:.8rem;
+  }
+  .phase-prog-track{
+    flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;
+  }
+  .phase-prog-fill{height:100%;border-radius:2px;transition:width .5s ease;}
+  .phase-prog-label{
+    font-family:var(--font-mono);
+    font-size:.65rem;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+
+  /* ── CATEGORY ── */
+  .category{margin-bottom:1.4rem;}
+  .cat-header{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.5rem .8rem;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius) var(--radius) 0 0;
+    cursor:pointer;
+    user-select:none;
+  }
+  .cat-icon{font-size:1rem;}
+  .cat-title{
+    font-family:var(--font-hd);
+    font-weight:600;
+    font-size:.95rem;
+    color:var(--white);
+    letter-spacing:.5px;
+  }
+  .cat-count{
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    color:var(--muted);
+    margin-left:auto;
+  }
+  .cat-chevron{
+    color:var(--muted);
+    font-size:.75rem;
+    transition:transform .2s;
+  }
+  .cat-chevron.open{transform:rotate(180deg);}
+  .cat-body{
+    border:1px solid var(--border);
+    border-top:none;
+    border-radius:0 0 var(--radius) var(--radius);
+    overflow:hidden;
+    background:var(--surface);
+  }
+
+  /* ── TASK ITEM ── */
+  .task-item{
+    display:flex;align-items:flex-start;gap:.8rem;
+    padding:.75rem 1rem;
+    border-bottom:1px solid rgba(30,45,61,.6);
+    transition:background .15s;
+    animation:slideIn .25s ease both;
+  }
+  .task-item:last-child{border-bottom:none;}
+  .task-item:hover{background:rgba(255,255,255,.025);}
+  .task-item.completed{opacity:.55;}
+  .task-item.completed .task-name{text-decoration:line-through;color:var(--muted);}
+
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+
+  .task-cb{
+    width:16px;height:16px;
+    border:1.5px solid var(--border);
+    border-radius:3px;
+    flex-shrink:0;
+    cursor:pointer;
+    position:relative;
+    margin-top:2px;
+    transition:all .18s;
+    appearance:none;background:transparent;
+  }
+  .task-cb:checked{
+    background:var(--green);
+    border-color:var(--green);
+    box-shadow:var(--glow-g);
+  }
+  .task-cb:checked::after{
+    content:'✓';
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.65rem;color:#000;font-weight:900;
+    line-height:14px;text-align:center;
+  }
+
+  .task-body{flex:1;min-width:0;}
+  .task-name{
+    font-size:.85rem;
+    color:var(--text);
+    line-height:1.45;
+    transition:color .15s;
+  }
+  .task-meta{
+    display:flex;gap:.5rem;flex-wrap:wrap;
+    margin-top:.3rem;
+  }
+  .tag{
+    font-family:var(--font-mono);
+    font-size:.62rem;
+    padding:.12rem .45rem;
+    border-radius:3px;
+    letter-spacing:.5px;
+  }
+  .tag-tool{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.2);}
+  .tag-prio-high{background:rgba(255,42,42,.12);color:var(--red);border:1px solid rgba(255,42,42,.3);}
+  .tag-prio-med{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.25);}
+  .tag-prio-low{background:rgba(0,255,136,.08);color:var(--green);border:1px solid rgba(0,255,136,.2);}
+
+  .task-actions{
+    display:flex;gap:.4rem;
+    opacity:0;transition:opacity .15s;
+    flex-shrink:0;
+  }
+  .task-item:hover .task-actions{opacity:1;}
+  .task-btn{
+    width:26px;height:26px;
+    border-radius:4px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
+    font-size:.75rem;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s;
+  }
+  .task-btn:hover{border-color:var(--red);color:var(--red);}
+  .task-btn.edit-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+  /* ── ADD TASK ── */
+  .add-task-row{
+    display:flex;gap:.5rem;
+    padding:.6rem 1rem;
+    background:var(--panel);
+    border-top:1px solid var(--border);
+  }
+  .add-task-input{
+    flex:1;
+    font-family:var(--font-body);
+    font-size:.82rem;
+    padding:.4rem .7rem;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    outline:none;
+    transition:border-color .18s;
+  }
+  .add-task-input:focus{border-color:var(--cyan);}
+  .add-task-btn{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    padding:.4rem .9rem;
+    border-radius:var(--radius);
+    border:1px solid var(--red);
+    background:rgba(255,42,42,.1);
+    color:var(--red);
+    cursor:pointer;
+    transition:all .18s;
+    white-space:nowrap;
+  }
+  .add-task-btn:hover{background:var(--red);color:#fff;box-shadow:var(--glow-red);}
+
+  /* ── MODAL ── */
+  .modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(4px);
+    z-index:500;
+    align-items:center;justify-content:center;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:1.8rem;
+    width:min(500px,90vw);
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+  }
+  .modal-title{
+    font-family:var(--font-hd);
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--white);
+    margin-bottom:1.2rem;
+    letter-spacing:.5px;
+  }
+  .field{margin-bottom:.9rem;}
+  .field label{
+    display:block;
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    color:var(--muted);
+    letter-spacing:2px;
+    margin-bottom:.35rem;
+  }
+  .field input,.field select,.field textarea{
+    width:100%;
+    font-family:var(--font-body);
+    font-size:.83rem;
+    padding:.5rem .75rem;
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    outline:none;
+    transition:border-color .18s;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan);}
+  .field select option{background:var(--panel);}
+  .field textarea{resize:vertical;min-height:70px;}
+  .modal-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.4rem;}
+  .btn-cancel{
+    font-family:var(--font-mono);font-size:.72rem;
+    padding:.45rem 1rem;border-radius:var(--radius);
+    border:1px solid var(--border);background:transparent;
+    color:var(--muted);cursor:pointer;transition:all .15s;
+  }
+  .btn-cancel:hover{border-color:var(--text);color:var(--text);}
+  .btn-save{
+    font-family:var(--font-mono);font-size:.72rem;
+    padding:.45rem 1.2rem;border-radius:var(--radius);
+    border:1px solid var(--cyan);background:rgba(0,229,255,.1);
+    color:var(--cyan);cursor:pointer;transition:all .15s;
+  }
+  .btn-save:hover{background:var(--cyan);color:#000;box-shadow:var(--glow-c);}
+
+  /* ── NOTIFICATION ── */
+  .notif{
+    position:fixed;bottom:1.5rem;right:1.5rem;
+    background:var(--panel);border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:.7rem 1.1rem;
+    font-family:var(--font-mono);font-size:.75rem;
+    color:var(--text);
+    box-shadow:0 8px 32px rgba(0,0,0,.5);
+    transform:translateY(80px);opacity:0;
+    transition:all .3s cubic-bezier(.4,0,.2,1);
+    z-index:600;
+    max-width:280px;
+  }
+  .notif.show{transform:translateY(0);opacity:1;}
+  .notif.green{border-color:var(--green);color:var(--green);}
+  .notif.red{border-color:var(--red);color:var(--red);}
+
+  /* ── TERMINAL BLIP ── */
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .cursor{display:inline-block;animation:blink 1s step-start infinite;color:var(--red);}
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    main{grid-template-columns:1fr;}
+    aside{display:none;}
+    .hero{padding:2rem 1rem 1.5rem;}
+    .stats-bar{padding:1rem;}
+    .controls{padding:.8rem 1rem;}
+    .content{padding:1rem;}
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty{
+    padding:2rem;text-align:center;
+    font-family:var(--font-mono);
+    font-size:.78rem;color:var(--muted);
+  }
+
+  /* ── PHASE COLORS ── */
+  .p1 .phase-badge{background:rgba(249,115,22,.12);color:var(--m1);border:1px solid rgba(249,115,22,.3);}
+  .p1 .phase-prog-fill{background:var(--m1);}
+  .p2 .phase-badge{background:rgba(168,85,247,.12);color:var(--m2);border:1px solid rgba(168,85,247,.3);}
+  .p2 .phase-prog-fill{background:var(--m2);}
+  .p3 .phase-badge{background:rgba(6,182,212,.12);color:var(--m3);border:1px solid rgba(6,182,212,.3);}
+  .p3 .phase-prog-fill{background:var(--m3);}
+
+  /* ── hidden ── */
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">RED<span>/</span>OPS<span class="cursor">_</span></div>
+  <div class="header-meta">
+    <div>OPERATOR: <b>YOU</b></div>
+    <div>MISSION WINDOW: <b id="hdr-dates"></b></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">// 90-DAY OFFENSIVE SECURITY ROADMAP</div>
+  <h1 class="hero-title">VAPT &amp; <span class="accent">RED TEAM</span><br>MASTERY TRACK</h1>
+  <p class="hero-sub">Structured 3-month curriculum — recon to full chain exploitation, evasion, AD attacks, web app VAPT, and report writing. Modify freely.</p>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat"><span class="stat-val red" id="s-total">0</span><span class="stat-lbl">TOTAL TASKS</span></div>
+  <div class="stat"><span class="stat-val green" id="s-done">0</span><span class="stat-lbl">COMPLETED</span></div>
+  <div class="stat"><span class="stat-val amber" id="s-pending">0</span><span class="stat-lbl">PENDING</span></div>
+  <div class="stat"><span class="stat-val cyan" id="s-pct">0%</span><span class="stat-lbl">PROGRESS</span></div>
+  <div class="stat"><span class="stat-val" style="color:var(--m2)" id="s-days">90</span><span class="stat-lbl">DAYS LEFT</span></div>
+</div>
+
+<!-- GLOBAL PROGRESS -->
+<div class="global-progress">
+  <div class="progress-header"><span>OVERALL MISSION PROGRESS</span><b id="prog-label">0 / 0</b></div>
+  <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button class="filter-btn active" onclick="setFilter('all',this)">ALL</button>
+  <button class="filter-btn" onclick="setFilter('pending',this)">PENDING</button>
+  <button class="filter-btn" onclick="setFilter('completed',this)">COMPLETED</button>
+  <button class="filter-btn" onclick="setFilter('high',this)">HIGH PRIO</button>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="search-inp" placeholder="search tasks..." oninput="renderAll()"/>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+<aside>
+  <div class="aside-section">
+    <div class="aside-label">// PHASES</div>
+    <a class="nav-item active" href="#phase1" onclick="sideNav(this)">
+      <span class="nav-dot" style="background:var(--m1)"></span>Phase 1 · Foundations
+      <span class="nav-count" id="nc-p1">-</span>
+    </a>
+    <a class="nav-item" href="#phase2" onclick="sideNav(this)">
+      <span class="nav-dot" style="background:var(--m2)"></span>Phase 2 · Exploitation
+      <span class="nav-count" id="nc-p2">-</span>
+    </a>
+    <a class="nav-item" href="#phase3" onclick="sideNav(this)">
+      <span class="nav-dot" style="background:var(--m3)"></span>Phase 3 · Advanced Ops
+      <span class="nav-count" id="nc-p3">-</span>
+    </a>
+  </div>
+  <div class="aside-section">
+    <div class="aside-label">// QUICK STATS</div>
+    <div style="padding:.4rem 1.2rem">
+      <div id="sidebar-cats"></div>
+    </div>
+  </div>
+</aside>
+
+<div class="content" id="main-content">
+  <!-- Rendered by JS -->
+</div>
+</main>
+
+<!-- ADD TASK MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title-text">// ADD TASK</div>
+    <div class="field"><label>TASK NAME</label><input type="text" id="m-name" placeholder="e.g. Practice Pass-the-Hash attack"/></div>
+    <div class="field"><label>TOOLS / NOTES</label><textarea id="m-notes" placeholder="e.g. Mimikatz, Impacket, CrackMapExec"></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="field"><label>PHASE</label>
+        <select id="m-phase">
+          <option value="phase1">Phase 1 · Foundations</option>
+          <option value="phase2">Phase 2 · Exploitation</option>
+          <option value="phase3">Phase 3 · Advanced Ops</option>
+        </select>
+      </div>
+      <div class="field"><label>PRIORITY</label>
+        <select id="m-prio">
+          <option value="high">HIGH</option>
+          <option value="med">MEDIUM</option>
+          <option value="low">LOW</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>CATEGORY</label>
+        <select id="m-cat"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">CANCEL</button>
+      <button class="btn-save" onclick="saveTask()">SAVE TASK</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA MODEL
+// ══════════════════════════════════════════════
+
+const START = new Date('2026-06-15');
+const END   = new Date('2026-09-15');
+
+const PHASES = [
+  { id:'phase1', label:'PHASE 01', title:'Recon & Web App VAPT Foundations', dates:'Jun 15 – Jul 15, 2026' },
+  { id:'phase2', label:'PHASE 02', title:'Network Exploitation & AD Attacks',   dates:'Jul 16 – Aug 15, 2026' },
+  { id:'phase3', label:'PHASE 03', title:'Advanced Red Team & C2 Operations',   dates:'Aug 16 – Sep 15, 2026' },
+];
+
+const DEFAULT_TASKS = [
+  // ── PHASE 1 ──────────────────────────────────────────────
+  // RECON
+  {id:'t001',phase:'phase1',cat:'Passive Recon',name:'OSINT full target profile — Maltego + theHarvester + spiderfoot',tools:'Maltego, theHarvester, SpiderFoot',prio:'high',done:false},
+  {id:'t002',phase:'phase1',cat:'Passive Recon',name:'Subdomain enumeration with Amass, Subfinder, AssetFinder',tools:'Amass, Subfinder, AssetFinder',prio:'high',done:false},
+  {id:'t003',phase:'phase1',cat:'Passive Recon',name:'Shodan / Censys / FOFA recon on target IP ranges',tools:'Shodan, Censys, FOFA',prio:'med',done:false},
+  {id:'t004',phase:'phase1',cat:'Passive Recon',name:'Google dorking — find exposed panels, configs, credentials',tools:'Google Dorks, GoogD0rker',prio:'med',done:false},
+  {id:'t005',phase:'phase1',cat:'Passive Recon',name:'Wayback Machine + gau for old endpoints and params',tools:'gau, waybackurls',prio:'low',done:false},
+  // ACTIVE RECON
+  {id:'t006',phase:'phase1',cat:'Active Recon',name:'Port scanning stealth SYN with Nmap + NSE scripts',tools:'Nmap, Masscan',prio:'high',done:false},
+  {id:'t007',phase:'phase1',cat:'Active Recon',name:'Service version fingerprinting — banner grabbing with Netcat',tools:'Nmap -sV, Netcat',prio:'high',done:false},
+  {id:'t008',phase:'phase1',cat:'Active Recon',name:'Web tech fingerprinting with WhatWeb + Wappalyzer',tools:'WhatWeb, Wappalyzer',prio:'med',done:false},
+  {id:'t009',phase:'phase1',cat:'Active Recon',name:'Directory brute-force with Feroxbuster + custom wordlists (SecLists)',tools:'Feroxbuster, SecLists',prio:'high',done:false},
+  {id:'t010',phase:'phase1',cat:'Active Recon',name:'Parameter fuzzing with Arjun + ffuf',tools:'Arjun, ffuf',prio:'med',done:false},
+  // WEB APP VAPT
+  {id:'t011',phase:'phase1',cat:'Web App VAPT',name:'OWASP Top 10 manual testing checklist — complete all 10',tools:'Burp Suite Pro',prio:'high',done:false},
+  {id:'t012',phase:'phase1',cat:'Web App VAPT',name:'SQLi — manual + sqlmap blind/union/OOB attacks',tools:'sqlmap, Burp',prio:'high',done:false},
+  {id:'t013',phase:'phase1',cat:'Web App VAPT',name:'XSS — reflected/stored/DOM, payload bypass WAF',tools:'Burp, XSStrike, dalfox',prio:'high',done:false},
+  {id:'t014',phase:'phase1',cat:'Web App VAPT',name:'SSRF hunting — cloud metadata, internal pivoting',tools:'Burp Collaborator, ffuf',prio:'high',done:false},
+  {id:'t015',phase:'phase1',cat:'Web App VAPT',name:'IDOR/BAC testing on API endpoints',tools:'Burp, manual',prio:'high',done:false},
+  {id:'t016',phase:'phase1',cat:'Web App VAPT',name:'JWT attacks — alg:none, RS→HS flip, weak secret brute',tools:'jwt_tool, Burp',prio:'med',done:false},
+  {id:'t017',phase:'phase1',cat:'Web App VAPT',name:'File upload bypass — polyglot, double ext, content-type mangle',tools:'Burp, ExifTool',prio:'med',done:false},
+  {id:'t018',phase:'phase1',cat:'Web App VAPT',name:'SSTI testing — Jinja2, Twig, Freemarker payloads',tools:'tplmap, Burp',prio:'med',done:false},
+  {id:'t019',phase:'phase1',cat:'Web App VAPT',name:'XXE — out-of-band exfil + error-based + blind',tools:'Burp, XXEinjector',prio:'med',done:false},
+  {id:'t020',phase:'phase1',cat:'Web App VAPT',name:'CORS misconfiguration check on all API origins',tools:'Corsy, Burp',prio:'low',done:false},
+  // REPORT
+  {id:'t021',phase:'phase1',cat:'Reporting',name:'Write VAPT report — exec summary + technical findings + CVSS',tools:'LaTeX / Word',prio:'high',done:false},
+  {id:'t022',phase:'phase1',cat:'Reporting',name:'Build reusable VAPT report template for future engagements',tools:'Markdown, Notion',prio:'med',done:false},
+
+  // ── PHASE 2 ──────────────────────────────────────────────
+  // NETWORK EXPLOITATION
+  {id:'t023',phase:'phase2',cat:'Network Exploitation',name:'Exploit MS17-010 (EternalBlue) — manual + Metasploit',tools:'Metasploit, manual exploit',prio:'high',done:false},
+  {id:'t024',phase:'phase2',cat:'Network Exploitation',name:'Credential spraying — SMB/RDP/SSH with CrackMapExec',tools:'CrackMapExec',prio:'high',done:false},
+  {id:'t025',phase:'phase2',cat:'Network Exploitation',name:'Responder + NTLMv2 hash capture then crack with Hashcat',tools:'Responder, Hashcat',prio:'high',done:false},
+  {id:'t026',phase:'phase2',cat:'Network Exploitation',name:'Relay attacks — ntlmrelayx + forced authentication',tools:'Impacket ntlmrelayx',prio:'high',done:false},
+  {id:'t027',phase:'phase2',cat:'Network Exploitation',name:'IPv6 takeover with mitm6 + credential relay',tools:'mitm6, ntlmrelayx',prio:'high',done:false},
+  {id:'t028',phase:'phase2',cat:'Network Exploitation',name:'Password cracking strategy — rules + masks + wordlists (RockYou2024)',tools:'Hashcat, John',prio:'med',done:false},
+  // ACTIVE DIRECTORY
+  {id:'t029',phase:'phase2',cat:'Active Directory',name:'AD enumeration — BloodHound + SharpHound collection',tools:'BloodHound, SharpHound',prio:'high',done:false},
+  {id:'t030',phase:'phase2',cat:'Active Directory',name:'Kerberoasting — extract TGS and offline crack',tools:'Impacket GetUserSPNs, Hashcat',prio:'high',done:false},
+  {id:'t031',phase:'phase2',cat:'Active Directory',name:'ASREPRoasting — no-preauth accounts enumeration',tools:'Impacket GetNPUsers',prio:'high',done:false},
+  {id:'t032',phase:'phase2',cat:'Active Directory',name:'Pass-the-Hash — lateral movement across hosts',tools:'Mimikatz, CrackMapExec',prio:'high',done:false},
+  {id:'t033',phase:'phase2',cat:'Active Directory',name:'Pass-the-Ticket — golden/silver ticket forging',tools:'Mimikatz, Impacket',prio:'high',done:false},
+  {id:'t034',phase:'phase2',cat:'Active Directory',name:'DCSync attack — dump NTDS.dit remotely',tools:'Mimikatz dcsync, secretsdump',prio:'high',done:false},
+  {id:'t035',phase:'phase2',cat:'Active Directory',name:'ACL abuse — WriteDACL, GenericAll, ForceChangePassword',tools:'BloodHound, PowerView',prio:'med',done:false},
+  {id:'t036',phase:'phase2',cat:'Active Directory',name:'GPO abuse — add local admin via malicious GPO',tools:'SharpGPOAbuse',prio:'med',done:false},
+  {id:'t037',phase:'phase2',cat:'Active Directory',name:'Constrained/Unconstrained delegation exploitation',tools:'Rubeus, Impacket',prio:'med',done:false},
+  {id:'t038',phase:'phase2',cat:'Active Directory',name:'ADCS ESC1-ESC8 certificate abuse attacks',tools:'Certipy, Certify',prio:'high',done:false},
+  // PIVOTING
+  {id:'t039',phase:'phase2',cat:'Pivoting & Tunneling',name:'Set up SOCKS5 pivot via Chisel through DMZ host',tools:'Chisel, proxychains',prio:'high',done:false},
+  {id:'t040',phase:'phase2',cat:'Pivoting & Tunneling',name:'SSH dynamic port forwarding + proxychains for internal reach',tools:'SSH, proxychains',prio:'high',done:false},
+  {id:'t041',phase:'phase2',cat:'Pivoting & Tunneling',name:'Ligolo-ng for transparent layer-3 tunneling',tools:'Ligolo-ng',prio:'med',done:false},
+  {id:'t042',phase:'phase2',cat:'Pivoting & Tunneling',name:'DNS tunneling with iodine for restrictive environments',tools:'iodine',prio:'med',done:false},
+  // PRIVESC
+  {id:'t043',phase:'phase2',cat:'Privilege Escalation',name:'Windows privesc — WinPEAS + manual token impersonation',tools:'WinPEAS, Potato exploits',prio:'high',done:false},
+  {id:'t044',phase:'phase2',cat:'Privilege Escalation',name:'Linux privesc — LinPEAS + SUID/sudo/cron abuse',tools:'LinPEAS, GTFOBins',prio:'high',done:false},
+  {id:'t045',phase:'phase2',cat:'Privilege Escalation',name:'SeImpersonatePrivilege → SYSTEM via PrintSpoofer',tools:'PrintSpoofer, Rogue Potato',prio:'high',done:false},
+
+  // ── PHASE 3 ──────────────────────────────────────────────
+  // C2
+  {id:'t046',phase:'phase3',cat:'C2 & Infrastructure',name:'Set up Havoc C2 with malleable profiles + HTTPS listener',tools:'Havoc C2',prio:'high',done:false},
+  {id:'t047',phase:'phase3',cat:'C2 & Infrastructure',name:'Configure redirectors with Apache mod_rewrite / Nginx for C2 traffic',tools:'Apache, Nginx, Cloudflare',prio:'high',done:false},
+  {id:'t048',phase:'phase3',cat:'C2 & Infrastructure',name:'DNS C2 beacon via custom domain + cobalt-style sleep jitter',tools:'Havoc / Sliver',prio:'med',done:false},
+  {id:'t049',phase:'phase3',cat:'C2 & Infrastructure',name:'Set up Sliver C2 as backup + mutual TLS implant',tools:'Sliver',prio:'med',done:false},
+  // AV EVASION
+  {id:'t050',phase:'phase3',cat:'AV / EDR Evasion',name:'Custom shellcode loader — process injection via CreateRemoteThread',tools:'C++, CobaltStrike-style',prio:'high',done:false},
+  {id:'t051',phase:'phase3',cat:'AV / EDR Evasion',name:'AMSI bypass — patch AmsiScanBuffer in memory',tools:'PowerShell, C#',prio:'high',done:false},
+  {id:'t052',phase:'phase3',cat:'AV / EDR Evasion',name:'ETW patching to blind EDR telemetry',tools:'C++, Manual syscalls',prio:'high',done:false},
+  {id:'t053',phase:'phase3',cat:'AV / EDR Evasion',name:'Direct syscalls with SysWhispers3 for EDR bypass',tools:'SysWhispers3',prio:'high',done:false},
+  {id:'t054',phase:'phase3',cat:'AV / EDR Evasion',name:'Payload obfuscation — XOR + AES + sleep encryption',tools:'Custom C loader',prio:'med',done:false},
+  {id:'t055',phase:'phase3',cat:'AV / EDR Evasion',name:'Process hollowing + ghost writing injection techniques',tools:'C++',prio:'med',done:false},
+  // CLOUD
+  {id:'t056',phase:'phase3',cat:'Cloud Security',name:'AWS pentest — IAM privilege escalation paths (Pacu)',tools:'Pacu, AWS CLI',prio:'high',done:false},
+  {id:'t057',phase:'phase3',cat:'Cloud Security',name:'Azure AD enumeration + token theft with ROADtools',tools:'ROADtools, AADInternals',prio:'high',done:false},
+  {id:'t058',phase:'phase3',cat:'Cloud Security',name:'Container escape from Docker — cgroup + privileged + socket',tools:'CDK, Deepce',prio:'med',done:false},
+  {id:'t059',phase:'phase3',cat:'Cloud Security',name:'Kubernetes enumeration + RBAC abuse + pod escape',tools:'kubectl, kube-hunter',prio:'med',done:false},
+  // FULL CHAIN
+  {id:'t060',phase:'phase3',cat:'Full Chain Simulation',name:'Complete red team lab — initial access → DA → exfil (HackTheBox Pro Lab)',tools:'HTB Pro Labs: Offshore / RastaLabs',prio:'high',done:false},
+  {id:'t061',phase:'phase3',cat:'Full Chain Simulation',name:'Phishing campaign with GoPhish + macro payload delivery',tools:'GoPhish, Evilginx2',prio:'high',done:false},
+  {id:'t062',phase:'phase3',cat:'Full Chain Simulation',name:'Evilginx2 adversary-in-the-middle phishing — bypass MFA',tools:'Evilginx2',prio:'high',done:false},
+  {id:'t063',phase:'phase3',cat:'Full Chain Simulation',name:'Full red team report — narrative, timeline, impact, remediation',tools:'LaTeX, Dradis',prio:'high',done:false},
+  // CERTS
+  {id:'t064',phase:'phase3',cat:'Certifications',name:'Complete OSCP lab machines — aim for 60+ pts',tools:'Kali, OffSec labs',prio:'high',done:false},
+  {id:'t065',phase:'phase3',cat:'Certifications',name:'Work through TCM PEH + PNPT exam prep',tools:'TCM Security platform',prio:'med',done:false},
+  {id:'t066',phase:'phase3',cat:'Certifications',name:'HackTheBox — pwn 10 active machines in 90 days',tools:'HackTheBox',prio:'med',done:false},
+];
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let tasks   = [];
+let filter  = 'all';
+let editId  = null;
+
+const CAT_ORDER = [
+  'Passive Recon','Active Recon','Web App VAPT','Reporting',
+  'Network Exploitation','Active Directory','Pivoting & Tunneling','Privilege Escalation',
+  'C2 & Infrastructure','AV / EDR Evasion','Cloud Security','Full Chain Simulation','Certifications'
+];
+
+const CAT_PHASE = {
+  'Passive Recon':'phase1','Active Recon':'phase1','Web App VAPT':'phase1','Reporting':'phase1',
+  'Network Exploitation':'phase2','Active Directory':'phase2','Pivoting & Tunneling':'phase2','Privilege Escalation':'phase2',
+  'C2 & Infrastructure':'phase3','AV / EDR Evasion':'phase3','Cloud Security':'phase3','Full Chain Simulation':'phase3','Certifications':'phase3'
+};
+
+function load(){
+  const saved = localStorage.getItem('redops_tasks');
+  tasks = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_TASKS));
+}
+function save(){
+  localStorage.setItem('redops_tasks',JSON.stringify(tasks));
+}
+
+// ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
+function renderAll(){
+  updateStats();
+  renderContent();
+  renderSidebar();
+}
+
+function getVisible(){
+  const q = document.getElementById('search-inp').value.toLowerCase();
+  return tasks.filter(t=>{
+    if(filter==='pending'  && t.done) return false;
+    if(filter==='completed'&& !t.done) return false;
+    if(filter==='high'     && t.prio!=='high') return false;
+    if(q && !t.name.toLowerCase().includes(q) && !(t.tools||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function updateStats(){
+  const total  = tasks.length;
+  const done   = tasks.filter(t=>t.done).length;
+  const pending= total-done;
+  const pct    = total ? Math.round(done/total*100) : 0;
+
+  const today  = new Date();
+  const daysLeft = Math.max(0, Math.round((END-today)/86400000));
+
+  document.getElementById('s-total').textContent  = total;
+  document.getElementById('s-done').textContent   = done;
+  document.getElementById('s-pending').textContent= pending;
+  document.getElementById('s-pct').textContent    = pct+'%';
+  document.getElementById('s-days').textContent   = daysLeft;
+  document.getElementById('prog-label').textContent= done+' / '+total;
+  document.getElementById('global-fill').style.width = pct+'%';
+
+  // per-phase counts
+  PHASES.forEach(p=>{
+    const pts = tasks.filter(t=>t.phase===p.id);
+    const pd  = pts.filter(t=>t.done).length;
+    const el  = document.getElementById('nc-'+p.id);
+    if(el) el.textContent = pd+'/'+pts.length;
+  });
+}
+
+function renderContent(){
+  const visible = getVisible();
+  const content = document.getElementById('main-content');
+  content.innerHTML='';
+
+  PHASES.forEach(ph=>{
+    const phTasks = visible.filter(t=>t.phase===ph.id);
+    if(!phTasks.length) return;
+
+    const allPhase = tasks.filter(t=>t.phase===ph.id);
+    const doneCnt  = allPhase.filter(t=>t.done).length;
+    const pct      = allPhase.length ? Math.round(doneCnt/allPhase.length*100) : 0;
+
+    const phEl = document.createElement('div');
+    phEl.className = 'phase-block '+ph.id.replace('phase','p');
+    phEl.id = ph.id;
+
+    phEl.innerHTML = `
+      <div class="phase-header">
+        <span class="phase-badge">${ph.label}</span>
+        <span class="phase-title">${ph.title}</span>
+        <span class="phase-dates">${ph.dates}</span>
+      </div>
+      <div class="phase-prog">
+        <div class="phase-prog-track"><div class="phase-prog-fill" style="width:${pct}%"></div></div>
+        <span class="phase-prog-label">${doneCnt}/${allPhase.length} · ${pct}%</span>
+      </div>
+    `;
+
+    // group by category
+    const cats = [...new Set(phTasks.map(t=>t.cat))].sort((a,b)=>CAT_ORDER.indexOf(a)-CAT_ORDER.indexOf(b));
+
+    cats.forEach(cat=>{
+      const catTasks = phTasks.filter(t=>t.cat===cat);
+      const catEl = buildCategory(cat, catTasks);
+      phEl.appendChild(catEl);
+    });
+
+    // Add task row
+    const addRow = document.createElement('div');
+    addRow.className='add-task-row';
+    addRow.style.marginTop='.8rem';
+    addRow.innerHTML=`
+      <input class="add-task-input" id="quick-${ph.id}" placeholder="Quick add task to ${ph.title.split(' ')[0]}..." />
+      <button class="add-task-btn" onclick="quickAdd('${ph.id}')">+ ADD</button>
+      <button class="add-task-btn" style="border-color:var(--cyan);background:rgba(0,229,255,.08);color:var(--cyan)" onclick="openAddModal('${ph.id}')">DETAILED</button>
+    `;
+    phEl.appendChild(addRow);
+    content.appendChild(phEl);
+  });
+
+  if(!content.innerHTML){
+    content.innerHTML='<div class="empty">// NO TASKS MATCH FILTER</div>';
+  }
+}
+
+function buildCategory(cat, catTasks){
+  const el = document.createElement('div');
+  el.className='category';
+
+  const done = catTasks.filter(t=>t.done).length;
+  const open = localStorage.getItem('cat_open_'+cat) !== 'false';
+
+  el.innerHTML=`
+    <div class="cat-header" onclick="toggleCat('${cat}',this)">
+      <span class="cat-icon">${catIcon(cat)}</span>
+      <span class="cat-title">${cat}</span>
+      <span class="cat-count">${done}/${catTasks.length}</span>
+      <span class="cat-chevron ${open?'open':''}">▼</span>
+    </div>
+    <div class="cat-body" id="catbody-${cat.replace(/\W/g,'_')}" style="${open?'':'display:none'}">
+      ${catTasks.map(t=>taskHTML(t)).join('')}
+    </div>
+  `;
+  return el;
+}
+
+function taskHTML(t){
+  const prioTag = `<span class="tag tag-prio-${t.prio}">${t.prio.toUpperCase()}</span>`;
+  const toolTag = t.tools ? `<span class="tag tag-tool">${t.tools.split(',')[0].trim()}</span>` : '';
+  return `
+    <div class="task-item ${t.done?'completed':''}" id="ti-${t.id}">
+      <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleDone('${t.id}',this.checked)"/>
+      <div class="task-body">
+        <div class="task-name">${t.name}</div>
+        <div class="task-meta">${prioTag}${toolTag}</div>
+      </div>
+      <div class="task-actions">
+        <button class="task-btn edit-btn" title="Edit" onclick="openEditModal('${t.id}')">✏</button>
+        <button class="task-btn" title="Delete" onclick="deleteTask('${t.id}')">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+function catIcon(c){
+  const m={'Passive Recon':'🕵️','Active Recon':'📡','Web App VAPT':'🌐','Reporting':'📄',
+    'Network Exploitation':'💥','Active Directory':'🏰','Pivoting & Tunneling':'🕳️','Privilege Escalation':'⬆️',
+    'C2 & Infrastructure':'🎯','AV / EDR Evasion':'🛡️','Cloud Security':'☁️','Full Chain Simulation':'🔗','Certifications':'🎓'};
+  return m[c]||'📌';
+}
+
+function renderSidebar(){
+  const el = document.getElementById('sidebar-cats');
+  if(!el) return;
+  const cats = [...new Set(tasks.map(t=>t.cat))];
+  el.innerHTML = cats.slice(0,8).map(c=>{
+    const done = tasks.filter(t=>t.cat===c&&t.done).length;
+    const tot  = tasks.filter(t=>t.cat===c).length;
+    const pct  = tot ? Math.round(done/tot*100) : 0;
+    return `
+      <div style="margin-bottom:.6rem">
+        <div style="display:flex;justify-content:space-between;font-size:.65rem;font-family:var(--font-mono);color:var(--muted);margin-bottom:2px">
+          <span style="color:var(--text);font-size:.68rem">${c}</span><span>${pct}%</span>
+        </div>
+        <div style="height:2px;background:var(--border);border-radius:1px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:var(--red);border-radius:1px;transition:width .4s"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════════════
+function toggleDone(id, checked){
+  const t = tasks.find(t=>t.id===id);
+  if(!t) return;
+  t.done = checked;
+  save();
+  const el = document.getElementById('ti-'+id);
+  if(el){
+    el.classList.toggle('completed', checked);
+    el.querySelector('.task-name').style.textDecoration = checked ? 'line-through' : '';
+  }
+  updateStats();
+  renderSidebar();
+  showNotif(checked ? '✓ Task completed' : '↩ Task reopened', checked?'green':'');
+}
+
+function deleteTask(id){
+  if(!confirm('Delete this task?')) return;
+  tasks = tasks.filter(t=>t.id!==id);
+  save(); renderAll();
+  showNotif('✕ Task deleted','red');
+}
+
+function toggleCat(cat, hdr){
+  const bodyId = 'catbody-'+cat.replace(/\W/g,'_');
+  const body = document.getElementById(bodyId);
+  if(!body) return;
+  const open = body.style.display!=='none';
+  body.style.display = open?'none':'';
+  hdr.querySelector('.cat-chevron').classList.toggle('open',!open);
+  localStorage.setItem('cat_open_'+cat, !open);
+}
+
+function quickAdd(phaseId){
+  const inp = document.getElementById('quick-'+phaseId);
+  const name = inp.value.trim();
+  if(!name) return;
+  addNewTask({name, phase:phaseId, cat: firstCatForPhase(phaseId), prio:'med', tools:'', done:false});
+  inp.value='';
+}
+
+function firstCatForPhase(ph){
+  const map={'phase1':'Web App VAPT','phase2':'Active Directory','phase3':'C2 & Infrastructure'};
+  return map[ph];
+}
+
+function addNewTask(data){
+  const id = 't'+ Date.now();
+  tasks.push({id, ...data});
+  save(); renderAll();
+  showNotif('+ Task added','green');
+}
+
+// ── MODAL ──────────────────────────────────────
+function populateCatSelect(){
+  const sel = document.getElementById('m-cat');
+  const ph  = document.getElementById('m-phase').value;
+  const cats= CAT_ORDER.filter(c=>CAT_PHASE[c]===ph);
+  sel.innerHTML = cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+document.getElementById('m-phase')?.addEventListener('change', populateCatSelect);
+
+function openAddModal(phaseId='phase1'){
+  editId=null;
+  document.getElementById('modal-title-text').textContent='// ADD TASK';
+  document.getElementById('m-name').value='';
+  document.getElementById('m-notes').value='';
+  document.getElementById('m-phase').value=phaseId;
+  document.getElementById('m-prio').value='med';
+  populateCatSelect();
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function openEditModal(id){
+  const t = tasks.find(t=>t.id===id);
+  if(!t) return;
+  editId=id;
+  document.getElementById('modal-title-text').textContent='// EDIT TASK';
+  document.getElementById('m-name').value=t.name;
+  document.getElementById('m-notes').value=t.tools||'';
+  document.getElementById('m-phase').value=t.phase;
+  document.getElementById('m-prio').value=t.prio;
+  populateCatSelect();
+  document.getElementById('m-cat').value=t.cat;
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('add-modal').classList.remove('open');
+  editId=null;
+}
+
+function saveTask(){
+  const name  = document.getElementById('m-name').value.trim();
+  if(!name){ alert('Task name is required'); return; }
+  const data={
+    name,
+    tools:  document.getElementById('m-notes').value.trim(),
+    phase:  document.getElementById('m-phase').value,
+    cat:    document.getElementById('m-cat').value,
+    prio:   document.getElementById('m-prio').value,
+  };
+  if(editId){
+    const t = tasks.find(t=>t.id===editId);
+    Object.assign(t,data);
+    showNotif('✏ Task updated','');
+  } else {
+    addNewTask({...data, done:false});
+    showNotif('+ Task saved','green');
+  }
+  save(); renderAll(); closeModal();
+}
+
+// click outside to close modal
+document.getElementById('add-modal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+// ── FILTER ─────────────────────────────────────
+function setFilter(f, btn){
+  filter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function sideNav(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── NOTIF ──────────────────────────────────────
+let notifTimer;
+function showNotif(msg, cls=''){
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.className = 'notif show '+(cls||'');
+  clearTimeout(notifTimer);
+  notifTimer=setTimeout(()=>n.className='notif',2500);
+}
+
+// ── HEADER ─────────────────────────────────────
+function initHeader(){
+  document.getElementById('hdr-dates').textContent='15 JUN – 15 SEP 2026';
+}
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
+load();
+initHeader();
+populateCatSelect();
+renderAll();
+</script>
+</body>
+</html>
